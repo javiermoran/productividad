@@ -1,0 +1,28 @@
+.tasks-right-btns {
+  position: absolute;
+  right: 10px;
+}
+
+.tasks-right-btns .glyphicon {
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.tasks-right-btns .glyphicon:hover {
+  color: #245580;
+}
+
+.tasks-right-btns .glyphicon-trash:hover {
+  color: #d9534f;
+}
+
+.panel-current-task {
+  text-align: left;
+  display: inline-block;
+  padding-left: 12px;
+  margin-bottom: 6px;
+}
+
+.page-header {
+  margin: 15px 0;
+}
