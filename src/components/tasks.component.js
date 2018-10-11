@@ -6,7 +6,8 @@ import { Button, ListGroup, ListGroupItem, Glyphicon, Row, Col } from 'react-boo
 import prettySecondsEs from '../utils/prettySecondsEs';
 import SearchBar from './searchbar.component';
 import CurrentTask from './currentTask.component';
-import { getTasks, deleteTask, setTaskAsComplete, toggleCurrentTaskPlaying } from '../actions';
+import { getTasks, deleteTask, setTaskAsComplete, toggleCurrentTaskPlaying, 
+        moveTaskPosition, refreshCurrentTask, generateMockData, filterTasks } from '../actions';
 
 class Tasks extends Component {
   constructor(props) {
@@ -14,11 +15,12 @@ class Tasks extends Component {
   }
 
   componentDidMount() {
-    this.props.getTasks();
+    this.props.filterTasks(this.props.search);
   }
 
   deleteClickHandler = (id) => {
     this.props.deleteTask(id);
+    this.props.filterTasks(this.props.search);
   }
 
   editClickHandler = (id) => {
@@ -27,11 +29,17 @@ class Tasks extends Component {
 
   completeClickHandler = () => {
     this.props.setTaskAsComplete();
-    this.props.getTasks();
+    this.props.filterTasks(this.props.search);
   }
 
   pauseClickHandler = () => {
     this.props.toggleCurrentTaskPlaying();
+  }
+
+  upDownClickHandler = (id, direction) => {
+    this.props.moveTaskPosition(id, direction);
+    this.props.refreshCurrentTask();
+    this.props.filterTasks(this.props.search);
   }
 
   renderTime = (task) => {
@@ -42,12 +50,34 @@ class Tasks extends Component {
     }
   }
 
+  renderUpDown = (task, index) => {
+    const top = <Glyphicon key="up"
+                  glyph="triangle-top" 
+                  onClick={() => { this.upDownClickHandler(task.id, 'up') }} 
+                />;
+    const bottom = <Glyphicon key="down"
+                      glyph="triangle-bottom" 
+                      onClick={() => { this.upDownClickHandler(task.id, 'down') }} 
+                    />
+    
+    const items = [];
+    if(index != 0 & this.props.tasks.length > 1) {
+      items.push(top);
+    }
+
+    if(index != this.props.tasks.length - 1) {
+      items.push(bottom);
+    }
+
+    return items;
+  }
+
   renderList() {
     if(!this.props.tasks.length) {
       return <div>No se encontraron tareas</div>;
     }
 
-    const list = this.props.tasks.map(task => {
+    const list = this.props.tasks.map((task, index) => {
       return (
         <ListGroupItem key={task.id}>
           <Row>
@@ -55,6 +85,7 @@ class Tasks extends Component {
               {task.description}
             </Col>
             <div className="tasks-right-btns">
+              {this.renderUpDown(task, index)}
               <Glyphicon glyph="pencil" onClick={() => { this.editClickHandler(task.id) }} />
               <Glyphicon glyph="trash" onClick={() => { this.deleteClickHandler(task.id) }} />
             </div>
@@ -93,7 +124,14 @@ class Tasks extends Component {
           <Col xs={12}>
             {this.renderList()}
           </Col>
-        </Row>        
+        </Row>  
+        <Row>
+          <Col xs={12}>
+            <Button bsStyle="link" onClick={() => { this.props.generateMockData() }}>
+              Registrar datos mock
+            </Button>
+          </Col>
+        </Row>      
       </div>
     )
   }
@@ -102,9 +140,20 @@ class Tasks extends Component {
 function mapStateToProps(state) {
   return {
     tasks: state.tasks,
-    currentTask: state.currentTask
+    currentTask: state.currentTask,
+    search: state.searchTerm
   }
 }
 
-const actions = { getTasks, deleteTask, setTaskAsComplete, toggleCurrentTaskPlaying };
+const actions = { 
+  getTasks, 
+  deleteTask, 
+  setTaskAsComplete, 
+  toggleCurrentTaskPlaying, 
+  moveTaskPosition,
+  refreshCurrentTask,
+  generateMockData,
+  filterTasks
+};
+
 export default connect(mapStateToProps, actions)(Tasks);

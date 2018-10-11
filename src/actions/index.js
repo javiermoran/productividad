@@ -5,6 +5,9 @@ export const GET_TASKS = 'GET_TASKS';
 export const FILTER_TASKS = 'FILTER_TASKS';
 export const REFRESH_CURRENT = 'REFRESH_CURRENT_TASK';
 export const REFRESH_COMPLETED = 'REFRESH_COMPLETED';
+export const GET_PRODUCTIVITY = 'GET_PRODUCTIVITY';
+export const TASK_CREATED = 'TASK_CREATED';
+export const SEARCH_TERM_CHANGED = 'SEARCH_TERM_CHANGED';
 
 export function getTasks() {
   const payload = TasksService.getTasks();  
@@ -23,7 +26,7 @@ export function deleteTask(id) {
 
 export function createTask(task) {
   const payload = TasksService.createTask(task);
-  return { type: REFRESH_TASKS, payload }
+  return { type: REFRESH_TASKS, payload: task }
 }
 
 export function updateTask(id, task) {
@@ -58,4 +61,23 @@ export function toggleCurrentTaskPlaying() {
   TasksService.togglePauseTask(task.id);
   const updatedTask = TasksService.getTasks()[0];
   return { type: REFRESH_CURRENT, payload: updatedTask };
+}
+
+export function moveTaskPosition(id, direction) {
+  const payload = TasksService.moveTaskPosition(id, direction);
+  return { type: REFRESH_TASKS, payload }
+}
+
+export function getProductivityData() {
+  const payload = TasksService.getProductivity();
+  return { type: GET_PRODUCTIVITY, payload };
+}
+
+export function generateMockData() {
+  const payload = TasksService.generateMockData();
+  return { type: REFRESH_TASKS, payload }
+}
+
+export function searchTermChanged(term) {
+  return { type: SEARCH_TERM_CHANGED, payload: term }
 }

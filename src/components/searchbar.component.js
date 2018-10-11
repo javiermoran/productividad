@@ -1,15 +1,18 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { FormGroup, FormControl } from 'react-bootstrap';
+import { FormGroup, FormControl, Checkbox } from 'react-bootstrap';
 
-import { filterTasks } from '../actions';
+import { filterTasks, searchTermChanged } from '../actions';
 
 class SearchBar extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      search: ''
+      search: '',
+      short: true,
+      medium: true,
+      long: true
     }
   }
 
@@ -24,14 +27,43 @@ class SearchBar extends Component {
             onChange={this.searchChangeHandler}
           />
         </FormGroup>
+        <FormGroup>
+          <Checkbox 
+            checked={this.state.short} 
+            onChange={(e) => { this.setState({ short: e.target.checked }, this.searchParamsChangeHandler) }} 
+            inline>Corta</Checkbox>
+          <Checkbox 
+            checked={this.state.medium} 
+            onChange={(e) => { this.setState({ medium: e.target.checked }, this.searchParamsChangeHandler) }} 
+            inline>Media</Checkbox>
+          <Checkbox 
+            checked={this.state.long} 
+            onChange={(e) => { this.setState({ long: e.target.checked }, this.searchParamsChangeHandler) }} 
+            inline>Larga</Checkbox>
+        </FormGroup>
       </form>
     );
   }
 
   searchChangeHandler = (e) => {
-    this.setState({ search: e.target.value });
-    this.props.filterTasks(e.target.value);
+    this.setState({ search: e.target.value }, this.searchParamsChangeHandler);
+    
+  }
+
+  searchParamsChangeHandler = () => {
+    const search = { 
+      term: this.state.search,
+      short: this.state.short,
+      medium: this.state.medium,
+      long: this.state.long
+    };
+    this.props.searchTermChanged(search);    
+    this.props.filterTasks(search);
   }
 }
 
-export default connect(null, { filterTasks })(SearchBar);
+function mapStateToProps(state) {
+  return { search: state.searchTerm };
+}
+
+export default connect(mapStateToProps, { filterTasks, searchTermChanged })(SearchBar);
