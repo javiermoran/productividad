@@ -58,7 +58,7 @@ export default class TasksService {
     }
 
     const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-    tasks.push(newTask);
+    tasks.unshift(newTask);
     localStorage.setItem('tasks', JSON.stringify(tasks));
     return this.getTasks();
   }
@@ -96,8 +96,8 @@ export default class TasksService {
     tasks[index].status = 'completed';
     tasks[index].completed = Date.now();
 
-    if(tasks[1]) {
-      tasks[1].paused = false;
+    if(tasks[0]) {
+      tasks[0].paused = false;
     }
     
     localStorage.setItem('tasks', JSON.stringify(tasks));
@@ -153,6 +153,16 @@ export default class TasksService {
 
   static generateMockData() {
     const newTasks = [
+      { id: uuid(), description: "Actividad corta 1", remaining: 3, status: "pending", time: 3},
+      { id: uuid(), description: "Actividad corta 2", remaining: 5, status: "pending", time: 5},
+      { id: uuid(), description: "Actividad corta 3", remaining: 100, status: "pending", time: 100},
+      { id: uuid(), description: "Actividad mediana", remaining: 3000, status: "pending", time: 3000},
+      { id: uuid(), description: "Actividad larga", remaining: 5400, status: "pending", time: 5400},
+      { id: uuid(), description: "Actividad 6", remaining: 1800, status: "pending", time: 1800},
+      { id: uuid(), description: "Actividad 7", remaining: 1800, status: "pending", time: 1800},
+      { id: uuid(), description: "Actividad 8", remaining: 1800, status: "pending", time: 1800},
+      { id: uuid(), description: "Actividad 15", remaining: 1800, status: "pending", time: 1800},
+      { id: uuid(), description: "Actividad 16", remaining: 1800, status: "pending", time: 1800},
       { id: uuid(), completed: 1539133323000, description: "Actividad 1", remaining: 0, status: "completed", time: 1800, remainingFinished: 1600},
       { id: uuid(), completed: 1539133323000, description: "Actividad 2", remaining: 0, status: "completed", time: 1800, remainingFinished: 100},
       { id: uuid(), completed: 1538956800000, description: "Actividad 3", remaining: 0, status: "completed", time: 1800, remainingFinished: 600},
@@ -164,11 +174,6 @@ export default class TasksService {
       { id: uuid(), completed: 1538611200000, description: "Actividad 12", remaining: 1200, status: "completed", time: 1800, remainingFinished: 160},
       { id: uuid(), completed: 1538611200000, description: "Actividad 13", remaining: 1200, status: "completed", time: 1800, remainingFinished: 0},
       { id: uuid(), completed: 1538611200000, description: "Actividad 14", remaining: 1200, status: "completed", time: 1800, remainingFinished: 0},
-      { id: uuid(), description: "Actividad 6", remaining: 1800, status: "pending", time: 1800},
-      { id: uuid(), description: "Actividad 7", remaining: 1800, status: "pending", time: 1800},
-      { id: uuid(), description: "Actividad 8", remaining: 1800, status: "pending", time: 1800},
-      { id: uuid(), description: "Actividad 15", remaining: 1800, status: "pending", time: 1800},
-      { id: uuid(), description: "Actividad 16", remaining: 1800, status: "pending", time: 1800},
     ];
 
     const tasks = JSON.parse(localStorage.getItem('tasks')) || [];

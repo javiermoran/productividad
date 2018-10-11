@@ -8,7 +8,8 @@ import {
   updateCurrentTaskTime, 
   getTasks, 
   toggleCurrentTaskPlaying,
-  setTaskAsComplete 
+  setTaskAsComplete,
+  filterTasks
 } from '../actions';
 
 class CurrentTask extends Component {
@@ -27,8 +28,8 @@ class CurrentTask extends Component {
     this.interval = setInterval(() => {
       if (!this.props.currentTask.paused) {
         this.props.updateCurrentTaskTime();
-        if (this.props.currentTask.remaining <= 0) {
-          this.props.getTasks();
+        if (this.props.currentTask.remaining <= 1) {
+          this.props.filterTasks(this.props.search);
         }
       }
     }, 1000);
@@ -41,7 +42,7 @@ class CurrentTask extends Component {
 
   completeClickHandler = () => {
     this.props.setTaskAsComplete();
-    this.props.getTasks();
+    this.props.filterTasks(this.props.search);
     this.props.updateCurrentTaskTime();
   }
 
@@ -67,7 +68,8 @@ class CurrentTask extends Component {
 
 function mapStateToProps(state) {
   return {
-    currentTask: state.currentTask
+    currentTask: state.currentTask,
+    search: state.searchTerm
   };
 }
 
@@ -76,7 +78,8 @@ const actions = {
   updateCurrentTaskTime, 
   getTasks, 
   toggleCurrentTaskPlaying, 
-  setTaskAsComplete 
+  setTaskAsComplete,
+  filterTasks
 };
 
 export default connect(mapStateToProps, actions)(CurrentTask);
